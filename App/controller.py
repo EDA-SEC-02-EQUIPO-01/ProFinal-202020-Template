@@ -25,7 +25,7 @@
  """
 
 import config as cf
-from App import model
+from App import model as m
 import csv
 
 """
@@ -39,13 +39,25 @@ recae sobre el controlador.
 # ___________________________________________________
 #  Inicializacion del catalogo
 # ___________________________________________________
-
+def iniciar_catalogo():
+    catalogo=m.catalogo()
+    return catalogo
 
 # ___________________________________________________
 #  Funciones para la carga de datos y almacenamiento
 #  de datos en los modelos
 # ___________________________________________________
 
+
+def loadFile(catalogo, tripfile):
+
+    tripfile = cf.data_dir + tripfile
+    input_file = csv.DictReader(open(tripfile, encoding="utf-8"),
+                                delimiter=",")
+    for trip in input_file:
+        m.addtrip(catalogo, trip)
+        
+    return catalogo
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
