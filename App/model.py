@@ -26,11 +26,13 @@
 import config
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.DataStructures import mapentry as ma
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import listiterator as it
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from DISClib.Algorithms.Sorting import mergesort as mer
 assert config
 
 """
@@ -40,9 +42,48 @@ de creacion y consulta sobre las estructuras de datos.
 
 # -----------------------------------------------------
 #                       API
-# -----------------------------------------------------
+# -----------------------------------------------------1
+
+def catalogo():
+    taxitrips={"lista_taxis":None,
+                "lista_compañias":None}
+    taxitrips["lista_taxis"] = m.newMap(numelements=17, prime=109345121, maptype='CHAINING', loadfactor=0.5, comparefunction=comparar_table)
+    taxitrips["lista_compañias"] = m.newMap(numelements=17, prime=109345121, maptype='CHAINING', loadfactor=0.5, comparefunction=comparar_table)
+    return taxitrips
 
 # Funciones para agregar informacion al grafo
+
+def addtaxi(catalogo,id):
+    pres= m.contains(catalogo["lista_taxis"],id)
+    if pres == False:
+        m.put(catalogo["lista_taxis"],id,1)
+    return catalogo
+
+def addcompany(catalogo,id,company):
+    pres= m.contains(catalogo["lista_compañias"],company)
+    if pres==False:
+        add= {"taxis":1,"servicios":1}
+        m.put(catalogo["lista_compañias"],company,add)
+    else:
+        tpre=m.contains(catalogo["lista_taxis"],id)
+        if tpre==False:
+            pareja=m.get(catalogo["lista_compañias"],company)
+            element=ma.getValue(pareja)
+            element["taxis"]+=1
+            element["servicios"]+=1
+            m.put(catalogo["lista_compañias"],company,element)
+        else:
+            pareja=m.get(catalogo["lista_compañias"],company)
+            element=ma.getValue(pareja)
+            element["servicios"]+=1
+            m.put(catalogo["lista_compañias"],company,element)
+    return catalogo
+
+def addtrip(catalogo,trip):
+    taxiid = trip["taxi_id"]
+    company = trip['company']
+    addcompany(catalogo,taxiid,company)
+    addtaxi(catalogo,taxiid)
 
 # ==============================
 # Funciones de consulta
@@ -55,3 +96,12 @@ de creacion y consulta sobre las estructuras de datos.
 # ==============================
 # Funciones de Comparacion
 # ==============================
+
+def comparar_table(route1,route2):
+    r2=route2["key"]
+    if route1 == r2:
+        return 0
+    elif route1 > r2:
+        return 1
+    else:
+        return -1
