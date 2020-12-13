@@ -27,8 +27,9 @@
 
 import sys
 import config
-from App import controller
+from App import controller as co
 from DISClib.ADT import stack
+from time import process_time
 import timeit
 assert config
 
@@ -42,8 +43,7 @@ operación seleccionada.
 # ___________________________________________________
 #  Variables
 # ___________________________________________________
-
-
+small="taxi-trips-wrvz-psew-subset-small.csv"
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
@@ -51,3 +51,37 @@ operación seleccionada.
 """
 Menu principal
 """
+def printMenu():
+    """
+    Imprime el menu de opciones
+    """
+    print("\nBienvenido")
+    print("1- Crear analizador")
+    print("2- Cargar informacion")
+    print("3- Requerimiento 1")
+    print("4- Requerimiento 2")
+    print("5- Requerimiento 3")
+    print("0- Salir")
+
+while True:
+    printMenu()
+    entrada=input("Seleccione una opcion para continuar\n")
+
+    if int(entrada)==1:
+        print("Inicializando...\n")
+        time1= process_time()
+        cat=co.iniciar_catalogo()
+        time2=process_time()
+        print(f"Tiempo de ejecucion: {time2-time1} segundos")
+    elif int(entrada)==2:
+        print("Inicializando...\n")
+        time1= process_time()
+        co.loadFile(cat,small)
+        time2=process_time()
+        print(f"Tiempo de ejecucion: {time2-time1} segundos")
+    elif int(entrada)==4:
+        None
+    elif int(entrada)==5:
+        None
+    elif int(entrada)==0:
+        break
