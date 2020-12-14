@@ -26,7 +26,10 @@
 
 import config as cf
 from App import model as m
+from DISClib.ADT import map as ma
 import csv
+from DISClib.ADT.graph import gr
+import datetime
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -56,8 +59,28 @@ def loadFile(catalogo, tripfile):
                                 delimiter=",")
     for trip in input_file:
         m.addtrip(catalogo, trip)
-        
     return catalogo
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+
+def mejor_horario(catalogo,areaorigen,areadestino,inicio,fin):
+    initialDate = datetime.datetime.strptime(inicio, '%H:%M:%S')
+    FinalDate = datetime.datetime.strptime(fin, '%H:%M:%S')
+    camino=m.mejor_horario(catalogo,areaorigen,areadestino,initialDate.time(),FinalDate.time())
+    return camino
+
+def numero_de_taxis(catalogo):
+    total= m.numero_de_taxis(catalogo)
+    return total
+def numero_de_compañias(catalogo):
+    total= m.numero_de_compañias(catalogo)
+    return total
+
+def top_taxis(catalogo):
+    top=m.top_taxis(catalogo)
+    return top
+
+def top_servicios(catalogo):
+    top=m.top_servcios(catalogo)
+    return top
