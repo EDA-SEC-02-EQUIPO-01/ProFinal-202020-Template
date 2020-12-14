@@ -37,7 +37,7 @@ import math
 assert config
 
 
-def Dijkstra(graph, source):
+def Dijkstra(graph, source,inicio,fin):
     """
     Implementa el algoritmo de Dijkstra
     Args:
@@ -58,7 +58,14 @@ def Dijkstra(graph, source):
                 edgesiter = it.newIterator(edges)
                 while (it.hasNext(edgesiter)):
                     edge = it.next(edgesiter)
-                    relax(search, edge)
+                    peso=e.weight(edge)
+                    
+                    v = e.either(edge)
+                    if v ==source:
+                        if peso[0]<fin and  peso[0]>inicio:
+                            relax(search, edge)
+                    else:
+                        relax(search, edge)
         return search
     except Exception as exp:
         error.reraise(exp, 'dks:dijkstra')
@@ -79,12 +86,13 @@ def relax(search, edge):
     try:
         v = e.either(edge)
         w = e.other(edge, v)
+        peso=e.weight(edge)
         visited_v = map.get(search['visited'], v)['value']
         visited_w = map.get(search['visited'], w)['value']
         distw = visited_w['distTo']
-        distv = visited_v['distTo'] + e.weight(edge)
+        distv = visited_v['distTo'] + peso[1]
         if (visited_w is None) or (distw > distv):
-            distow = visited_v['distTo'] + e.weight(edge)
+            distow = visited_v['distTo'] + peso[1]
             map.put(search['visited'],
                     w,
                     {'marked': True, 'edgeTo': edge, 'distTo': distow}
