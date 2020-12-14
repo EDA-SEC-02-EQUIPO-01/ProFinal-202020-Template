@@ -279,6 +279,7 @@ def getEdge(graph, vertexa, vertexb):
         element = map.get(graph['vertices'], vertexa)
         lst = element['value']
         itvertex = it.newIterator(lst)
+        edges=lt.newList(datastructure='SINGLE_LINKED', cmpfunction=None)
         while (it.hasNext(itvertex)):
             edge = it.next(itvertex)
             if (graph['directed']):
@@ -286,11 +287,9 @@ def getEdge(graph, vertexa, vertexb):
                    (e.other(edge, e.either(edge)) == vertexb)):
                     return edge
             elif(e.either(edge) == vertexa or
-                 (e.other(edge, e.either(edge)) == vertexa)):
-                if (e.either(edge) == vertexb or
-                   (e.other(edge, e.either(edge)) == vertexb)):
-                    return edge
-        return None
+                 (e.other(edge, e.either(edge)) == vertexb)):
+                    lt.addLast(edges,edge)
+        return edges
     except Exception as exp:
         error.reraise(exp, 'ajlist:getedge')
 
