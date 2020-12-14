@@ -30,6 +30,7 @@ import config
 from App import controller as co
 from DISClib.ADT import stack
 from time import process_time
+from DISClib.DataStructures import listiterator as it
 import timeit
 assert config
 
@@ -39,11 +40,56 @@ Presenta el menu de opciones  y  por cada seleccion
 hace la solicitud al controlador para ejecutar la
 operación seleccionada.
 """
+def convertir_numero(num):
+    numero=""
+    for n in range(len(num)):
+        if num[n] != ".":
+            numero+=num[n]
+        else:
+            return int(numero)
+    return int(numero)
+
+def imprimir_top(lista,numero,clave):
+    veces=0
+    ite=it.newIterator(lista)
+    print(f"En el top {numero} de compañias con mayor cantidad de {clave} se encuentran:")
+    while it.hasNext(ite) and veces<numero:
+        pareja=it.next(ite)
+        compañia= pareja["key"]
+        taxis=pareja["value"][clave]
+        veces+=1
+        if veces == (numero):
+            print (f"La compañia {compañia} con {taxis} {clave}\n")
+        else:
+            print (f"La compañia {compañia} con {taxis} {clave}")
+
+def imprimir_pila(pila):
+    ite=it.newIterator(pila)
+    tiempo=0
+    while it.hasNext(ite):
+        arco=it.next(ite)
+        seg=arco["weight"][1]
+        horario=str(arco["weight"][0])
+        v1=convertir_numero(arco["vertexA"])
+        v2=convertir_numero(arco["vertexB"])
+        if tiempo == 0:
+            print (f"El mejor horario de inicio de viaje es {horario}\n")
+            print (f"La ruta de community areas es la siguiente:")
+            print (f"Dea la community area {v1} a la community area {v2}")
+            tiempo+=seg
+        else:
+            print (f"Dea la community area {v1} a la community area {v2}")
+            tiempo+=seg
+    tiempo= round((tiempo/60),2)
+    print(f"El tiempo estimado de viaje es de {tiempo} minutos")
+
 
 # ___________________________________________________
 #  Variables
 # ___________________________________________________
 small="taxi-trips-wrvz-psew-subset-small.csv"
+medium= "taxi-trips-wrvz-psew-subset-medium.csv"
+large="taxi-trips-wrvz-psew-subset-large.csv"
 # ___________________________________________________
 #  Menu principal
 # ___________________________________________________
@@ -79,9 +125,24 @@ while True:
         co.loadFile(cat,small)
         time2=process_time()
         print(f"Tiempo de ejecucion: {time2-time1} segundos")
+    elif int(entrada)==3:
+        m=int(input("Ingrese el numero para el top de compañías ordenada por la cantidad de taxis afiliados:\n"))
+        n=int(input("Ingrese el numero para el top de de compañías que más servicios prestaron:\n"))
+        taxis= co.numero_de_taxis(cat)
+        compañias= co.numero_de_compañias(cat)
+        top_taxis=co.top_taxis(cat)
+        top_servicos=co.top_servicios(cat)
+        print(f"En total hay {taxis} taxis\n")
+        print(f"En total hay {compañias} compañias\n")
+        imprimir_top(top_taxis,m,"taxis")
+        imprimir_top(top_taxis,n,"servicios")
+
     elif int(entrada)==4:
-        None
-    elif int(entrada)==5:
-        None
+        areainicio=input("Ingrese el area de inicio:\n")
+        areafinal=input("Ingrese el area de finalización:\n")
+        inicio=input("Ingrese la hora inicial: Formato HH:MM:SS\n")
+        fin=input("Ingrese la hora final: Formato HH:MM:SS\n")
+        camino=co.mejor_horario(cat,areainicio+".0",areafinal+".0",inicio, fin)
+        imprimir_pila(camino)
     elif int(entrada)==0:
         break
